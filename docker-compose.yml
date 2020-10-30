@@ -5,6 +5,7 @@ services:
       context: .
       dockerfile: containers/app/Dockerfile
     container_name: shipment-app
+    env_file: .env
     command: sh -c "chmod +x ./containers/app/wait-for-it.sh;./containers/app/wait-for-it.sh db:3306;fresh;"
     stdin_open: true
     tty: true
@@ -18,12 +19,7 @@ services:
   db:
     image: mysql:8.0
     container_name: shipment-db
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: go_database
-      MYSQL_USER: go_test
-      MYSQL_PASSWORD: password
-      TZ: 'Asia/Tokyo'
+    env_file: .env
     command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     volumes:
       - db-data:/var/lib/mysql
