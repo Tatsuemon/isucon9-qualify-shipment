@@ -34,15 +34,15 @@ func NewShipmentHandler(s usecase.ShipmentUseCase) ShipmentHandler {
 
 // [POST] /create
 type createReq struct {
-	toAddress   string `json: to_address`
-	toName      string `json: to_name`
-	fromAddress string `json: from_address`
-	fromName    string `json: from_name`
+	ToAddress   string `json:"to_address"`
+	ToName      string `json:"to_name"`
+	FromAddress string `json:"from_address"`
+	FromName    string `json:"from_name"`
 }
 
 type createRes struct {
 	ReserveID   string `json:"reserve_id"`
-	ReserveTime int64  `json:"reserve_time`
+	ReserveTime int64  `json:"reserve_time"`
 }
 
 func (s *shipmentHandler) CreateShipment(w http.ResponseWriter, r *http.Request) {
@@ -65,10 +65,10 @@ func (s *shipmentHandler) CreateShipment(w http.ResponseWriter, r *http.Request)
 	defer r.Body.Close()
 
 	ship, err := entity.NewShipment(
-		req.toAddress,
-		req.toName,
-		req.fromAddress,
-		req.fromName,
+		req.ToAddress,
+		req.ToName,
+		req.FromAddress,
+		req.FromName,
 	)
 
 	if err != nil {
@@ -148,7 +148,7 @@ func (s *shipmentHandler) RequestShipment(w http.ResponseWriter, r *http.Request
 	h := md5.New()
 	h.Write(png)
 
-	_, err := s.ShipmentUseCase.RequestShipment(r.Context(), req.ReserveID, fmt.Sprintf("%x", h.Sum(nil)))
+	_, err = s.ShipmentUseCase.RequestShipment(r.Context(), req.ReserveID, fmt.Sprintf("%x", h.Sum(nil)))
 	if err != nil {
 		respondWithError(w, http.StatusBadRequest, "empty")
 		return
