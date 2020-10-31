@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"os"
 	"time"
 
 	"github.com/Tatsuemon/isucon9-qualify-shipment/domain/entity"
@@ -14,7 +15,7 @@ import (
 	"github.com/skip2/go-qrcode"
 )
 
-const IsucariAPIToken = "Bearer 75ugk2m37a750fwir5xr-22l6h4wmue1bwrubzwd0"
+var isucariAPIToken = os.Getenv("AUTH_BEARER")
 
 type ShipmentHandler interface {
 	CreateShipment(w http.ResponseWriter, r *http.Request)
@@ -47,13 +48,8 @@ type createRes struct {
 
 func (s *shipmentHandler) CreateShipment(w http.ResponseWriter, r *http.Request) {
 	// TODO(Tatusemon): Middleware
-	if r.Method != http.MethodPost {
-		w.WriteHeader(http.StatusMethodNotAllowed)
-		return
-	}
-	// TODO(Tatusemon): Middleware
-	if r.Header.Get("Authorization") != IsucariAPIToken {
-		w.WriteHeader(http.StatusUnauthorized)
+	if r.Header.Get("Authorization") != isucariAPIToken {
+		respondWithError(w, http.StatusUnauthorized, "authorization error")
 		return
 	}
 
@@ -100,13 +96,8 @@ type requestReq struct {
 
 func (s *shipmentHandler) RequestShipment(w http.ResponseWriter, r *http.Request) {
 	// TODO(Tatusemon): Middleware
-	if r.Method != http.MethodPost {
-		w.WriteHeader(http.StatusMethodNotAllowed)
-		return
-	}
-	// TODO(Tatusemon): Middleware
-	if r.Header.Get("Authorization") != IsucariAPIToken {
-		w.WriteHeader(http.StatusUnauthorized)
+	if r.Header.Get("Authorization") != isucariAPIToken {
+		respondWithError(w, http.StatusUnauthorized, "authorization error")
 		return
 	}
 
@@ -191,13 +182,8 @@ type shipmentStatusRes struct {
 
 func (s *shipmentHandler) StatusShipment(w http.ResponseWriter, r *http.Request) {
 	// TODO(Tatusemon): Middleware
-	if r.Method != http.MethodPost {
-		w.WriteHeader(http.StatusMethodNotAllowed)
-		return
-	}
-	// TODO(Tatusemon): Middleware
-	if r.Header.Get("Authorization") != IsucariAPIToken {
-		w.WriteHeader(http.StatusUnauthorized)
+	if r.Header.Get("Authorization") != isucariAPIToken {
+		respondWithError(w, http.StatusUnauthorized, "authorization error")
 		return
 	}
 
@@ -230,13 +216,8 @@ type doneShipmentReq struct {
 
 func (s *shipmentHandler) DoneShipment(w http.ResponseWriter, r *http.Request) {
 	// TODO(Tatusemon): Middleware
-	if r.Method != http.MethodPost {
-		w.WriteHeader(http.StatusMethodNotAllowed)
-		return
-	}
-	// TODO(Tatusemon): Middleware
-	if r.Header.Get("Authorization") != IsucariAPIToken {
-		w.WriteHeader(http.StatusUnauthorized)
+	if r.Header.Get("Authorization") != isucariAPIToken {
+		respondWithError(w, http.StatusUnauthorized, "authorization error")
 		return
 	}
 

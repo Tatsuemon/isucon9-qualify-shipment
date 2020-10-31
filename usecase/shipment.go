@@ -71,7 +71,7 @@ func (s *shipmentUseCase) RequestShipment(ctx context.Context, id string, str st
 		}
 		shipment.Status = entity.WAIT_PICKUP
 		shipment.QRMD5 = str
-		return s.ShipmentRepository.Store(ctx, shipment)
+		return s.ShipmentRepository.Update(ctx, shipment)
 	})
 	if err != nil {
 		return nil, err
@@ -87,7 +87,7 @@ func (s *shipmentUseCase) DoneShipment(ctx context.Context, id string) (*entity.
 		}
 		shipment.Status = entity.DONE
 		shipment.DoneDateTime = time.Now()
-		return s.ShipmentRepository.Store(ctx, shipment)
+		return s.ShipmentRepository.Update(ctx, shipment)
 	})
 	if err != nil {
 		return nil, err
