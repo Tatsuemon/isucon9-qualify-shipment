@@ -9,11 +9,12 @@ import (
 func AuthrizationBearer(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		var isucariAPIToken = os.Getenv("AUTH_BEARER")
-		if r.URL.Path == "/accept" {
+		switch {
+		case r.URL.Path == "/accept":
 			next.ServeHTTP(w, r)
-		} else if r.Header.Get("Authorization") == isucariAPIToken {
+		case r.Header.Get("Authorization") == isucariAPIToken:
 			next.ServeHTTP(w, r)
-		} else {
+		default:
 			http.Error(w, "authorization error", http.StatusUnauthorized)
 		}
 	})
