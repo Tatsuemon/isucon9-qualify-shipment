@@ -7,6 +7,17 @@ import (
 	"github.com/google/uuid"
 )
 
+// TODO(Tatsuemon): enum的な何か
+// type ShipmentStatus struct {
+// 	string
+// }
+
+// shipmentStatus := [...]string {"initial", "wait_pickup", "shipping", "done", "cancel"}
+
+// func NewShipmentStatus() (*ShipmentStatus, error) {
+// 	return &ShipmentStatus{shipmentStatus[0]}
+// }
+
 type Shipment struct {
 	ID              string    `json:"id" db:"id"`
 	ToAddress       string    `json:"to_address" db:"to_address"`
