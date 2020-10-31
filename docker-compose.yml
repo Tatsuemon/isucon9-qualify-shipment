@@ -20,7 +20,7 @@ services:
     image: mysql:8.0
     container_name: shipment-db
     env_file: .env
-    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_bin
     volumes:
       - db-data:/var/lib/mysql
       - ./containers/mysql/my.cnf:/etc/mysql/conf.d/my.cnf

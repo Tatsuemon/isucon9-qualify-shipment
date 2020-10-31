@@ -1,6 +1,5 @@
 FROM golang:1.15.0
 
-ARG CGO_ENABLED=0
 ARG GOOS=linux
 ARG GOARCH=amd64
 
@@ -10,7 +9,6 @@ COPY go.mod ./
 RUN go mod download
 
 COPY . .
-RUN go build \
-    -ldflags '-s -w'
-
-RUN go get github.com/pilu/fresh
+RUN go build -ldflags '-s -w' && \
+    go get github.com/pilu/fresh && \
+    go get bitbucket.org/liamstask/goose/cmd/goose
