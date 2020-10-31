@@ -44,12 +44,6 @@ type createRes struct {
 }
 
 func (s *shipmentHandler) CreateShipment(w http.ResponseWriter, r *http.Request) {
-	// TODO(Tatusemon): Middleware
-	if r.Header.Get("Authorization") != isucariAPIToken {
-		respondWithError(w, http.StatusUnauthorized, "authorization error")
-		return
-	}
-
 	req := createReq{}
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		respondWithError(w, http.StatusBadRequest, "json decode error")
@@ -92,12 +86,6 @@ type requestReq struct {
 }
 
 func (s *shipmentHandler) RequestShipment(w http.ResponseWriter, r *http.Request) {
-	// TODO(Tatusemon): Middleware
-	if r.Header.Get("Authorization") != isucariAPIToken {
-		respondWithError(w, http.StatusUnauthorized, "authorization error")
-		return
-	}
-
 	req := requestReq{}
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		respondWithError(w, http.StatusBadRequest, "json decode error")
@@ -109,7 +97,10 @@ func (s *shipmentHandler) RequestShipment(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	schema := r.Header.Get("X-Forwarded-Proto")
+	schema := "http"
+	if r.Header.Get("X-Forwarded-Proto") == "https" {
+		schema = "https"
+	}
 	host := r.Host
 	png, err := s.ShipmentUseCase.CreateAcceptQr(schema, host, req.ReserveID)
 	if err != nil {
@@ -161,12 +152,6 @@ type shipmentStatusRes struct {
 }
 
 func (s *shipmentHandler) StatusShipment(w http.ResponseWriter, r *http.Request) {
-	// TODO(Tatusemon): Middleware
-	if r.Header.Get("Authorization") != isucariAPIToken {
-		respondWithError(w, http.StatusUnauthorized, "authorization error")
-		return
-	}
-
 	req := shipmentStatusReq{}
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		respondWithError(w, http.StatusBadRequest, "json decode error")
@@ -195,12 +180,6 @@ type doneShipmentReq struct {
 }
 
 func (s *shipmentHandler) DoneShipment(w http.ResponseWriter, r *http.Request) {
-	// TODO(Tatusemon): Middleware
-	if r.Header.Get("Authorization") != isucariAPIToken {
-		respondWithError(w, http.StatusUnauthorized, "authorization error")
-		return
-	}
-
 	req := doneShipmentReq{}
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		respondWithError(w, http.StatusBadRequest, "json decode error")

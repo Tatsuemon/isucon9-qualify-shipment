@@ -31,6 +31,5 @@ $ docker-compose run app goose down
 ```
 
 ### TODO
-- Middlewareの導入
 - testコード
 - github actionsでテストを走らせる
