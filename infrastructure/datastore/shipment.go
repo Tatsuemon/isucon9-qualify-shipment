@@ -21,7 +21,7 @@ func NewShipmentRepository(conn *sqlx.DB) repository.ShipmentRepository {
 
 func (r *shipmentRepository) FindByID(id string) (*entity.Shipment, error) {
 	shipment := entity.Shipment{}
-	if err := r.conn.Get(&shipment, "SELECT id, to_address, to_name, from_address, from_name, status, reserve_date_time, created_at FROM shipments WHERE id = ?", id); err != nil {
+	if err := r.conn.Get(&shipment, "SELECT id, to_address, to_name, from_address, from_name, status, reserve_date_time, done_date_time, qrmd5, created_at FROM shipments WHERE id = ?", id); err != nil {
 		return nil, err
 	}
 
@@ -36,7 +36,7 @@ func (r *shipmentRepository) Store(ctx context.Context, s *entity.Shipment) (*en
 	if !ok {
 		tx = r.conn
 	}
-	stmt, err := tx.Prepare("INSERT INTO `shipments` (id, to_address, to_name, from_address, from_name, status, reserve_date_time, created_at) VALUES(?, ?, ?, ?, ?, ?, ?, ?)")
+	stmt, err := tx.Prepare("INSERT INTO `shipments` (id, to_address, to_name, from_address, from_name, status, reserve_date_time, done_date_time, qrmd5, created_at) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
 
 	if err != nil {
 		return nil, err
@@ -48,7 +48,7 @@ func (r *shipmentRepository) Store(ctx context.Context, s *entity.Shipment) (*en
 		}
 	}()
 
-	_, err = stmt.Exec(s.ID, s.ToAddress, s.ToName, s.FromAddress, s.FromName, s.Status, s.ReserveDateTime, s.CreatedAt)
+	_, err = stmt.Exec(s.ID, s.ToAddress, s.ToName, s.FromAddress, s.FromName, s.Status, s.ReserveDateTime, s.DoneDateTime, s.QRMD5, s.CreatedAt)
 	if err != nil {
 		return nil, err
 	}
@@ -63,7 +63,7 @@ func (r *shipmentRepository) Update(ctx context.Context, s *entity.Shipment) (*e
 	if !ok {
 		tx = r.conn
 	}
-	stmt, err := tx.Prepare("UPDATE `shipments` SET to_address=?, to_name=?, from_address=?, from_name=?, status=?, reserve_date_time=?, created_at=? WHERE id=?")
+	stmt, err := tx.Prepare("UPDATE `shipments` SET to_address=?, to_name=?, from_address=?, from_name=?, status=?, reserve_date_time=?, done_date_time=?, qrmd5=?, created_at=? WHERE id=?")
 
 	if err != nil {
 		return nil, err
@@ -75,7 +75,7 @@ func (r *shipmentRepository) Update(ctx context.Context, s *entity.Shipment) (*e
 		}
 	}()
 
-	_, err = stmt.Exec(s.ToAddress, s.ToName, s.FromAddress, s.FromName, s.Status, s.ReserveDateTime, s.CreatedAt, s.ID)
+	_, err = stmt.Exec(s.ToAddress, s.ToName, s.FromAddress, s.FromName, s.Status, s.ReserveDateTime, s.DoneDateTime, s.QRMD5, s.CreatedAt, s.ID)
 	if err != nil {
 		return nil, err
 	}

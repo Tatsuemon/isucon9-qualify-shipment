@@ -8,7 +8,9 @@ CREATE TABLE `shipments` (
     `from_address` varchar(255) COLLATE utf8mb4_bin NOT NULL COMMENT '配達元の住所',
     `from_name` varchar(255) COLLATE utf8mb4_bin NOT NULL COMMENT '配達元の名前',
     `status` varchar(127) COLLATE utf8mb4_bin NOT NULL COMMENT '配達ステータス',
-    `reserve_date_time`DATETIME COLLATE utf8mb4_bin NOT NULL COMMENT '配達予約時間',
+    `reserve_date_time` DATETIME COLLATE utf8mb4_bin NOT NULL COMMENT '配達予約時間',
+    `done_date_time` DATETIME COLLATE utf8mb4_bin COMMENT '配達完了時間',
+    `qrmd5` varchar(255) COLLATE utf8mb4_bin COMMENT 'QRMD5',
     `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;

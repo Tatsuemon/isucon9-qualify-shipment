@@ -26,6 +26,8 @@ type Shipment struct {
 	FromName        string    `json:"from_name" db:"from_name"`
 	Status          string    `json:"status" db:"status"`
 	ReserveDateTime time.Time `json:"reseve_date_time" db:"reserve_date_time"`
+	DoneDateTime    time.Time `json:"done_date_time" db:"done_date_time"`
+	QRMD5           string    `json:"qrmd5" db:"qrmd5"`
 	CreatedAt       time.Time `json:"created_at" db:"created_at"`
 }
 
