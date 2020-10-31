@@ -18,6 +18,14 @@ import (
 // 	return &ShipmentStatus{shipmentStatus[0]}
 // }
 
+const (
+	INITIAL     = "initial"
+	WAIT_PICKUP = "wait_pickup"
+	SHIPPING    = "shipping"
+	DONE        = "done"
+	CANCEL      = "cancel"
+)
+
 type Shipment struct {
 	ID              string    `json:"id" db:"id"`
 	ToAddress       string    `json:"to_address" db:"to_address"`
@@ -42,7 +50,7 @@ func NewShipment(toAddress string, toName string, fromAddress string, fromName s
 		ToName:          toName,
 		FromAddress:     fromAddress,
 		FromName:        fromName,
-		Status:          "initial",
+		Status:          INITIAL,
 		ReserveDateTime: time.Now().AddDate(0, 0, 1), // 1日後
 		CreatedAt:       time.Now(),
 	}, nil
