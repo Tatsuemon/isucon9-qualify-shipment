@@ -4,9 +4,11 @@ import (
 	"context"
 	"crypto/sha256"
 	"fmt"
+	"net/url"
 	"time"
 
 	"github.com/Tatsuemon/isucon9-qualify-shipment/domain/repository"
+	"github.com/skip2/go-qrcode"
 
 	"github.com/Tatsuemon/isucon9-qualify-shipment/domain/entity"
 	"github.com/Tatsuemon/isucon9-qualify-shipment/infrastructure/datastore"
@@ -19,6 +21,7 @@ type ShipmentUseCase interface {
 	RequestShipment(ctx context.Context, id string, str string) (*entity.Shipment, error)    // POST /request
 	DoneShipment(ctx context.Context, id string) (*entity.Shipment, error)                   // POST /done
 	CheckAcceptToken(id string, token string) bool
+	CreateAcceptQr(schema string, host string, id string) ([]byte, error)
 }
 
 type shipmentUseCase struct {
@@ -98,4 +101,26 @@ func (s *shipmentUseCase) DoneShipment(ctx context.Context, id string) (*entity.
 func (s *shipmentUseCase) CheckAcceptToken(id string, token string) bool {
 	sha256 := sha256.Sum256([]byte(id))
 	return token == fmt.Sprintf("%x", sha256)
+}
+
+func (s *shipmentUseCase) CreateAcceptQr(schema string, host string, id string) ([]byte, error) {
+	u := &url.URL{
+		Scheme: schema,
+		Host:   host,
+		Path:   "/accept",
+	}
+	sha256 := sha256.Sum256([]byte(id))
+	q := u.Query()
+	q.Set("id", id)
+	q.Set("token", fmt.Sprintf("%x", sha256))
+
+	u.RawQuery = q.Encode()
+
+	msg := u.String()
+
+	png, err := qrcode.Encode(msg, qrcode.Low, 256)
+	if err != nil {
+		return nil, err
+	}
+	return png, err
 }

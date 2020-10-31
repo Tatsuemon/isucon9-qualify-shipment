@@ -2,17 +2,14 @@ package handler
 
 import (
 	"crypto/md5"
-	"crypto/sha256"
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"net/url"
 	"os"
 	"time"
 
 	"github.com/Tatsuemon/isucon9-qualify-shipment/domain/entity"
 	"github.com/Tatsuemon/isucon9-qualify-shipment/usecase"
-	"github.com/skip2/go-qrcode"
 )
 
 var isucariAPIToken = os.Getenv("AUTH_BEARER")
@@ -112,26 +109,9 @@ func (s *shipmentHandler) RequestShipment(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	// TODO(Tatsuemon): QRの作成 分ける
-	schema := "http"
-	if r.Header.Get("X-Forwarded-Proto") == "https" {
-		schema = "https"
-	}
-	u := &url.URL{
-		Scheme: schema,
-		Host:   r.Host,
-		Path:   "/accept",
-	}
-	sha256 := sha256.Sum256([]byte(req.ReserveID))
-	q := u.Query()
-	q.Set("id", req.ReserveID)
-	q.Set("token", fmt.Sprintf("%x", sha256))
-
-	u.RawQuery = q.Encode()
-
-	msg := u.String()
-
-	png, err := qrcode.Encode(msg, qrcode.Low, 256)
+	schema := r.Header.Get("X-Forwarded-Proto")
+	host := r.Host
+	png, err := s.ShipmentUseCase.CreateAcceptQr(schema, host, req.ReserveID)
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return
