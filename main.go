@@ -1,18 +1,31 @@
 package main
 
 import (
-	"fmt"
 	"log"
-	"net/http"
+	"os"
+
+	"github.com/Tatsuemon/isucon9-qualify-shipment/config"
+	di "github.com/Tatsuemon/isucon9-qualify-shipment/di/containers"
+	"github.com/Tatsuemon/isucon9-qualify-shipment/infrastructure/datastore"
+	server "github.com/Tatsuemon/isucon9-qualify-shipment/infrastructure/web"
 )
 
 func main() {
-	http.HandleFunc("/", handler)
-	http.ListenAndServe(":8080", nil)
-}
+	const port = 8080
 
-func handler(w http.ResponseWriter, r *http.Request) {
-	log.Println("bbbbbb")
-	fmt.Fprintf(w, "Hello, from Docker container!")
-	log.Println("aaaaaa")
+	db, err := datastore.NewMysqlDB(config.DSN())
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer func() {
+		err := db.Close()
+		if err != nil {
+			log.Fatal()
+		}
+	}()
+
+	shipmentController := di.NewShipmentContainer(os.Getenv("ENV"), db.DB)
+	s := server.NewServer()
+	s.Init(shipmentController.Handler)
+	s.Run(port)
 }
