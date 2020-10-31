@@ -1,0 +1,39 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Build and Publish Docker
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the develop branch
+on:
+  push:
+    branches: [ main ]
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    runs-on: ubuntu-latest
+#     needs: test
+    env:
+      IMAGE_NAME: isucon9-qualify-shipment
+    steps:
+      - name: checkout 
+        uses: actions/checkout@v2
+
+      - name: SEt up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      
+      - name: Login to Github Container Registry
+        uses: docker/login-action@v1
+        with:
+          registy: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.CR_PAT }}
+          
+      - name: Build and Push
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:latest
