@@ -38,4 +38,3 @@ $ docker-compose -f docker-compose.test.yml run app go test -v ./...
 
 ### TODO
 - testコード
-- github actionsでテストを走らせる
