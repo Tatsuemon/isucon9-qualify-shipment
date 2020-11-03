@@ -19,5 +19,4 @@ jobs:
       - name: Go test
         shell: bash
         run: |
-          echo aaaaa
-          # docker-compose -f docker-compose.test.yml run app go test -v ./...
+          docker-compose -f docker-compose.test.yml run app go test -v ./...
