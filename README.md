@@ -30,6 +30,12 @@ $ docker-compose run app goose up
 $ docker-compose run app goose down
 ```
 
+
+### Test
+```
+$ docker-compose -f docker-compose.test.yml run app go test -v ./...
+```
+
 ### TODO
 - testコード
 - github actionsでテストを走らせる
