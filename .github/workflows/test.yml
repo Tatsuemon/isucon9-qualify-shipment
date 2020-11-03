@@ -17,4 +17,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Go test
-        run: docker-compose run -f docker-compose.test.yml app go test -v ./...
+        shell: bash
+        run:  |
+        echo 'aaaaa'
+        docker-compose run -f docker-compose.test.yml app go test -v ./...
